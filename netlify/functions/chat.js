@@ -2,7 +2,6 @@ import { Client } from "@gradio/client";
 
 export async function handler(event, context) {
   try {
-    // Extract the parameters from the query string.
     const { 
       prompt, 
       max_tokens = "18000", 
@@ -10,7 +9,6 @@ export async function handler(event, context) {
       top_p = "0.95" 
     } = event.queryStringParameters || {};
 
-    // Validate the required prompt parameter.
     if (!prompt) {
       return {
         statusCode: 400,
@@ -19,21 +17,22 @@ export async function handler(event, context) {
       };
     }
 
-    // Use a hard-coded system message.
-    const system_message = "You are a friendly Chatbot created by balianone.com";
-
-    // Connect to your Gradio model.
+    // Connect to Gradio app
     const client = await Client.connect("llamameta/Pixtral-Large-Instruct-2411");
+    
+    // Get API info to verify endpoints (optional debugging step)
+    // const app_info = await client.view_api();
+    // console.log("API Info:", app_info);
 
-    // Call the predict method with the proper parameters.
-    // Change the fn_index value if needed.
+    // Corrected predict call with proper parameters and fn_index
     const result = await client.predict(
       prompt, 
-      system_message, 
       Number(max_tokens), 
       Number(temperature), 
       Number(top_p),
-      { fn_index: 1 } // Try using 1 instead of 0. Change further if needed.
+      { 
+        fn_index: 0 // Most likely correct index for text generation
+      }
     );
 
     return {
@@ -42,12 +41,12 @@ export async function handler(event, context) {
       body: JSON.stringify({ data: result }),
     };
   } catch (error) {
-    console.error("Error during prediction:", error);
+    console.error("Error:", error);
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        error: "An error occurred while processing your request",
+        error: "Failed to process request. Please check your parameters.",
       }),
     };
   }
