@@ -1,0 +1,7 @@
+[build]
+  functions = "netlify/functions"
+  publish = "public"
+
+[functions]
+  # You can configure timeouts and memory here if needed:
+  node_bundler = "esbuild"
