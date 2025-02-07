@@ -2,10 +2,9 @@ import { Client } from "@gradio/client";
 
 export async function handler(event, context) {
   try {
-    // Extract query parameters; prompt is required.
+    // Extract only the parameters that the user should provide.
     const {
       prompt,
-      system_message = "You are a friendly Chatbot created by balianone.com",
       max_tokens = "18000",
       temperature = "0.7",
       top_p = "0.95",
@@ -20,14 +19,14 @@ export async function handler(event, context) {
       };
     }
 
-    // Map the prompt to the model's expected first argument.
+    // Use a hard-coded system message.
+    const system_message = "You are a friendly Chatbot created by balianone.com";
     const message = prompt;
 
-    // Connect to the Gradio model.
+    // Connect to your Gradio model.
     const client = await Client.connect("llamameta/Pixtral-Large-Instruct-2411");
 
-    // Call the predict method using the function index.
-    // Adjust fn_index if your chat function is at a different index.
+    // Call the predict method using the provided parameters and hard-coded system message.
     const result = await client.predict(
       message,
       system_message,
